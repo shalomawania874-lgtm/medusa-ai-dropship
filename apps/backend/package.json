@@ -15,6 +15,7 @@
   "scripts": {
     "build": "medusa build",
     "start": "medusa start",
+    "prestart": "medusa db:migrate",
     "dev": "medusa develop",
     "lint": "medusa lint",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
@@ -56,6 +57,6 @@
     "yalc": "^1.0.0-pre.53"
   },
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=20.19.0 || >=22.12.0"
   }
 }
