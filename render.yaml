@@ -23,7 +23,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: MEDUSA_WORKER_MODE
-        value: server
+        value: shared
       - key: DISABLE_MEDUSA_ADMIN
         value: "false"
       - key: DATABASE_URL
@@ -73,43 +73,3 @@ services:
         sync: false
       - key: STORE_PUBLIC_URL
         sync: false
-
-  - type: worker
-    name: medusa-ai-dropship-worker
-    runtime: node
-    plan: free
-    region: oregon
-    branch: main
-    repo: https://github.com/shalomawania874-lgtm/medusa-ai-dropship
-    buildCommand: cd apps/backend && npm install --legacy-peer-deps && npm run build
-    startCommand: cd apps/backend && npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: MEDUSA_WORKER_MODE
-        value: worker
-      - key: DISABLE_MEDUSA_ADMIN
-        value: "true"
-      - key: DATABASE_URL
-        sync: false
-      - key: REDIS_URL
-        fromService:
-          name: medusa-ai-dropship-redis
-          type: keyvalue
-          property: connectionString
-      - key: JWT_SECRET
-        sync: false
-      - key: COOKIE_SECRET
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: OPENAI_MODEL
-        value: gpt-5.6-luna
-      - key: CJ_ACCESS_TOKEN
-        sync: false
-      - key: CJ_BASE_URL
-        value: https://developers.cjdropshipping.com/api2.0/v1
-      - key: CJ_LOGISTIC_NAME
-        sync: false
-      - key: CJ_FROM_COUNTRY
-        value: CN
