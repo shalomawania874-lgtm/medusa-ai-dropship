@@ -1,1 +1,3 @@
-exports.key = 'cj'; exports.service = require('./service.js')
+exports.default = {}
+exports.default.key = "cj"
+exports.default.service = require("./service.js")
