@@ -6,8 +6,8 @@ services:
     region: oregon
     branch: main
     repo: https://github.com/shalomawania874-lgtm/medusa-ai-dropship
-    buildCommand: corepack pnpm install --frozen-lockfile && corepack pnpm --filter @dtc/backend build
-    startCommand: cd apps/backend && medusa start
+    buildCommand: cd apps/backend && npm install --legacy-peer-deps && npm run build
+    startCommand: cd apps/backend && npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -68,8 +68,8 @@ services:
     region: oregon
     branch: main
     repo: https://github.com/shalomawania874-lgtm/medusa-ai-dropship
-    buildCommand: corepack pnpm install --frozen-lockfile && corepack pnpm --filter @dtc/backend build
-    startCommand: cd apps/backend && medusa start
+    buildCommand: cd apps/backend && npm install --legacy-peer-deps && npm run build
+    startCommand: cd apps/backend && npm start
     envVars:
       - key: NODE_ENV
         value: production
