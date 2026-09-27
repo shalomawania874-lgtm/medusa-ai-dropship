@@ -33,6 +33,23 @@ module.exports = defineConfig({
         options: { providers: [{ resolve: "@medusajs/medusa/locking-redis", id: "locking-redis", is_default: true, options: { redisUrl } }] },
       },
     ] : []),
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [{
+          resolve: "medusa-payment-pesapal",
+          id: "pesapal",
+          options: {
+            consumer_key: process.env.PESAPAL_CONSUMER_KEY,
+            consumer_secret: process.env.PESAPAL_CONSUMER_SECRET,
+            environment: process.env.PESAPAL_ENVIRONMENT || "sandbox",
+            currency: process.env.PESAPAL_CURRENCY || "UGX",
+            merchant_name: process.env.PESAPAL_MERCHANT_NAME,
+            ipn_url: process.env.PESAPAL_IPN_URL,
+          },
+        }],
+      },
+    },
     { resolve: "./src/modules/cj/index.js" },
   ],
 })
