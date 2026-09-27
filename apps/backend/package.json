@@ -4,18 +4,10 @@
   "description": "A starter for Medusa projects.",
   "author": "Medusa (https://medusajs.com)",
   "license": "MIT",
-  "keywords": [
-    "sqlite",
-    "postgres",
-    "typescript",
-    "ecommerce",
-    "headless",
-    "medusa"
-  ],
+  "keywords": ["sqlite","postgres","typescript","ecommerce","headless","medusa"],
   "scripts": {
     "build": "medusa build",
     "start": "medusa start",
-    "prestart": "medusa db:migrate",
     "dev": "medusa develop",
     "lint": "medusa lint",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
@@ -25,7 +17,7 @@
   "dependencies": {
     "@medusajs/admin-sdk": "2.21.1",
     "@medusajs/admin-shared": "2.21.1",
-    "@medusajs/caching": "2.21.1",
+    "@medusajs/cache-inmemory": "2.21.1",
     "@medusajs/cli": "2.21.1",
     "@medusajs/dashboard": "2.21.1",
     "@medusajs/draft-order": "2.21.1",
@@ -51,12 +43,11 @@
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "ts-node": "^10.9.2",
     "typescript": "^5.6.2",
     "vite": "^7.3.6",
     "yalc": "^1.0.0-pre.53"
   },
   "engines": {
-    "node": ">=20.19.0 || >=22.12.0"
+    "node": "22.12.0"
   }
 }
