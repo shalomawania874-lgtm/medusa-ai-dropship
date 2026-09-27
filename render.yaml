@@ -1,4 +1,14 @@
 services:
+  - type: keyvalue
+    name: medusa-ai-dropship-redis
+    plan: free
+    region: oregon
+    maxmemoryPolicy: noeviction
+    persistenceMode: off
+    ipAllowList:
+      - source: 0.0.0.0/0
+        description: everywhere
+
   - type: web
     name: medusa-ai-dropship
     runtime: node
@@ -19,7 +29,10 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: REDIS_URL
-        sync: false
+        fromService:
+          name: medusa-ai-dropship-redis
+          type: keyvalue
+          property: connectionString
       - key: JWT_SECRET
         generateValue: true
       - key: COOKIE_SECRET
@@ -80,11 +93,18 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: REDIS_URL
-        sync: false
+        fromService:
+          name: medusa-ai-dropship-redis
+          type: keyvalue
+          property: connectionString
       - key: JWT_SECRET
         sync: false
       - key: COOKIE_SECRET
         sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-5.6-luna
       - key: CJ_ACCESS_TOKEN
         sync: false
       - key: CJ_BASE_URL
@@ -93,7 +113,3 @@ services:
         sync: false
       - key: CJ_FROM_COUNTRY
         value: CN
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: OPENAI_MODEL
-        value: gpt-5.6-luna

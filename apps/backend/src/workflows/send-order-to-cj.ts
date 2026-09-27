@@ -3,8 +3,17 @@ import { updateOrderWorkflow, useQueryGraphStep } from "@medusajs/medusa/core-fl
 import CJModuleService from "../modules/cj/service"
 
 const sendStep = createStep("send-order-to-cj", async ({ order }: { order: any }) => {
+  const existing = order.metadata?.cj_fulfillment
+  if (existing?.externalId) return new StepResponse(existing)
+
   const cj = new CJModuleService()
   if (!cj.configured()) throw new Error("CJ_ACCESS_TOKEN is not configured; order was not sent to supplier")
+
+  const paymentStatus = order.payment_collections?.[0]?.payments?.some((p: any) =>
+    p.captured_at || p.captured_at === 0 || p.status === "captured"
+  )
+  if (!paymentStatus) throw new Error("Order is not payment-captured; supplier fulfillment is blocked")
+
   const result = await cj.createOrder({
     orderNumber: order.display_id ? String(order.display_id) : order.id,
     shipping: { ...order.shipping_address, email: order.email },
@@ -23,7 +32,10 @@ const sendStep = createStep("send-order-to-cj", async ({ order }: { order: any }
 export const sendOrderToCJWorkflow = createWorkflow("send-order-to-cj", ({ orderId }: { orderId: string }) => {
   const { data: orders } = useQueryGraphStep({
     entity: "order",
-    fields: ["id", "display_id", "email", "items.*", "items.variant.*", "shipping_address.*"],
+    fields: [
+      "id", "display_id", "email", "metadata", "items.*", "items.variant.*",
+      "shipping_address.*", "payment_collections.*", "payment_collections.payments.*",
+    ],
     filters: { id: orderId },
     options: { throwIfKeyNotFound: true },
   })
