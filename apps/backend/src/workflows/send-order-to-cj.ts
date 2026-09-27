@@ -1,5 +1,5 @@
 import { createStep, StepResponse, createWorkflow, WorkflowResponse } from "@medusajs/framework/workflows-sdk"
-import { updateOrdersWorkflow, useRemoteQueryStep } from "@medusajs/medusa/core-flows"
+import { updateOrderWorkflow, useRemoteQueryStep } from "@medusajs/medusa/core-flows"
 import CJModuleService from "../modules/cj/service.js"
 
 const sendStep = createStep("send-order-to-cj", async ({ order }: { order: any }) => {
@@ -32,7 +32,7 @@ export const sendOrderToCJWorkflow = createWorkflow("send-order-to-cj", ({ order
     variables: { filters: { id: orderId } },
   })
   const sent = sendStep({ order: orders[0] })
-  const updated = updateOrdersWorkflow.runAsStep({
+  const updated = updateOrderWorkflow.runAsStep({
     input: { id: orderId, user_id: "", metadata: { cj_fulfillment: sent } },
   })
   return new WorkflowResponse(updated)
