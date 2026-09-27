@@ -1,1 +1,8 @@
-module.exports = { key: "cj", service: require("./service.js") }\n
+const { Module } = require("@medusajs/framework/utils")
+const CJModuleService = require("./service.js")
+
+module.exports = {
+  default: Module("cj", {
+    service: CJModuleService,
+  }),
+}
