@@ -30,7 +30,6 @@ export const sendOrderToCJWorkflow = createWorkflow("send-order-to-cj", ({ order
     entry_point: "order",
     fields: ["id", "display_id", "email", "metadata", "items.*", "items.variant.*", "shipping_address.*"],
     variables: { filters: { id: orderId } },
-    options: { throwIfKeyNotFound: true },
   })
   const sent = sendStep({ order: orders[0] })
   const updated = updateOrdersWorkflow.runAsStep({
