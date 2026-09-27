@@ -70,6 +70,6 @@ module.exports = defineConfig({
         }],
       },
     },
-    { resolve: "./src/modules/cj" },
+    { resolve: "./src/modules/cj/index.js" },
   ],
 })
