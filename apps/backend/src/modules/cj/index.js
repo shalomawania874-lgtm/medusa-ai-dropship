@@ -1,1 +1,1 @@
-module.exports = { key: "cj", service: require("./service.js") }
+module.exports = { key: "cj", service: require("./service.js") }\n
