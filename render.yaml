@@ -1,14 +1,4 @@
 services:
-  - type: keyvalue
-    name: medusa-ai-dropship-redis
-    plan: free
-    region: oregon
-    maxmemoryPolicy: noeviction
-    persistenceMode: off
-    ipAllowList:
-      - source: 0.0.0.0/0
-        description: everywhere
-
   - type: web
     name: medusa-ai-dropship
     runtime: node
@@ -16,23 +6,20 @@ services:
     region: oregon
     branch: main
     repo: https://github.com/shalomawania874-lgtm/medusa-ai-dropship
-    buildCommand: cd apps/backend && npm install --legacy-peer-deps && npm run build
-    startCommand: cd apps/backend && npm start
+    buildCommand: cd apps/backend && npm install --legacy-peer-deps && npm run build && cd .medusa/server && npm install --legacy-peer-deps
+    startCommand: cd apps/backend/.medusa/server && npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
       - key: MEDUSA_WORKER_MODE
-        value: shared
+        value: server
       - key: DISABLE_MEDUSA_ADMIN
         value: "false"
       - key: DATABASE_URL
         sync: false
       - key: REDIS_URL
-        fromService:
-          name: medusa-ai-dropship-redis
-          type: keyvalue
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: COOKIE_SECRET
