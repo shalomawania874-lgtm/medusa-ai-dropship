@@ -6,7 +6,7 @@ services:
     region: oregon
     branch: main
     repo: https://github.com/shalomawania874-lgtm/medusa-ai-dropship
-    buildCommand: rm -rf apps/backend/.medusa apps/backend/node_modules/.medusa && cd apps/backend && npm install --legacy-peer-deps --no-audit --no-fund && npm run build && cd .medusa/server && npm install --legacy-peer-deps --omit=dev --no-audit --no-fund && cd ../.. && npx medusa db:migrate --skip-links --skip-search
+    buildCommand: rm -rf apps/backend/.medusa apps/backend/medusa-server apps/backend/node_modules && cd apps/backend && npm install --legacy-peer-deps --no-audit --no-fund && npm run build && rm -rf medusa-server && cp -R .medusa/server medusa-server && cp -f medusa-config.js medusa-server/medusa-config.js && test -f medusa-server/package.json && cd medusa-server && npm install --legacy-peer-deps --omit=dev --no-audit --no-fund && cd .. && npx medusa db:migrate --skip-links --skip-search
     startCommand: cd apps/backend && npm start
     healthCheckPath: /health
     envVars:
