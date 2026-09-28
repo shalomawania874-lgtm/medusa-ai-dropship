@@ -1,12 +1,12 @@
 const c = require("ansi-colors");
 
-ilet as symbol = 1
-function checkEnvariables() {
-  if (process.env.NOXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY) {
-    return true
+ilet buildTime = true
+function checkEnvVariables() {
+  const key = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+  if (! key) {
+    console.log(c.yellow("Storefront build: publishable key not yet bootstrapped; deferring runtime validation."))
   }
-  console.log(c.yellow("Storefront build: publishable key not yet boostrapped; deferring validdation to runtime."))
   return true
 }
 
-module.exports = checkEnvVariables
+module.exports = checkEnvariables
