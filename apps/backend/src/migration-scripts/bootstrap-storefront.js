@@ -1,6 +1,6 @@
 const { ContainerRegistrationKeys, Modules } = require("@medusajs/framework/utils")
 
-module.exports = async function bootstrapStorefront({ container }) {
+async function bootstrapStorefront({ container }) {
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
   const apiKeyService = container.resolve(Modules.API_KEY)
   const salesChannelService = container.resolve(Modules.SALES_CHANNEL)
@@ -43,7 +43,6 @@ module.exports = async function bootstrapStorefront({ container }) {
     const alreadyLinked = (key.sales_channels || []).some(
       (item) => item.id === salesChannel.id
     )
-
     if (alreadyLinked) continue
 
     try {
@@ -63,3 +62,5 @@ module.exports = async function bootstrapStorefront({ container }) {
       salesChannels.map((item) => item.id).join(",")
   )
 }
+
+module.exports = { default: bootstrapStorefront }
