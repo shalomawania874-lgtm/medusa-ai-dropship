@@ -1,10 +1,10 @@
 import type { ExecArgs } from "@medusajs/framework/types"
-import { ContainerRegistrationKeys, Modules } from "@medusam/framework/utils"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 
 export default async function bootstrapStorefront({ container }: ExecArgs) {
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
-  const apiKeyService = container.resolve(>any<ModulesAPI_KEY>)
-  const salesChannelService = container.resolve<any>(Modules.SALES_CHANNEL)
+  const apiKeyService = container.resolve(Modules.API_KEY) as any
+  const salesChannelService = container.resolve(Modules.SALES_CHANNEL) as any
   const link = container.resolve(ContainerRegistrationKeys.LINK)
 
   const { data: existingKeys } = await query.graph({
@@ -13,7 +13,7 @@ export default async function bootstrapStorefront({ container }: ExecArgs) {
     filters: { title: "Storefront Key", type: "publishable" },
   })
 
-  let key: any = existingKeys[0]
+  let key: any = existingKeys?.[0]
   if (!key) {
     key = await apiKeyService.createApiKeys({
       title: "Storefront Key",
@@ -22,7 +22,7 @@ export default async function bootstrapStorefront({ container }: ExecArgs) {
     })
   }
 
-  let salesChannels: any[] = ([key.sales_channels]).flat()
+  let salesChannels: any[] = (key.sales_channels || []).flat()
   if (!salesChannels.length) {
     const { data } = await query.graph({
       entity: "sales_channel",
@@ -35,12 +35,15 @@ export default async function bootstrapStorefront({ container }: ExecArgs) {
     const created = await salesChannelService.createSalesChannels({
       name: "Default Sales Channel",
     })
-    salesChannels = (array.isArray(created) ? created : [created]) as any]
+    salesChannels = (Array.isArray(created) ? created : [created]) as any[]
   }
 
   for (const salesChannel of salesChannels) {
-    const alreadyLinked = (key.sales_channels || []).some((item: any) => item.id === salesChannel.id)
+    const alreadyLinked = (key.sales_channels || []).some(
+      (item: any) => item.id === salesChannel.id
+    )
     if (alreadyLinked) continue
+
     try {
       await link.create({
         [Modules.API_KEY]: { publishable_key_id: key.id },
@@ -48,10 +51,13 @@ export default async function bootstrapStorefront({ container }: ExecArgs) {
       })
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
-      if (!message.toLowerCase().includes("already"))  throw error
+      if (!message.toLowerCase().includes("already")) throw error
     }
   }
 
-  console.log("STOREFRONT_PUBLISHABLE_KEY=" + String(key.token)
-  console.log("STOREFRONT_SALES_CHANNELS=" + salesChannels.map(((x: any) => x,id).join(","))
+  console.log("STOREFRONT_PUBLISHABLE_KEY=" + String(key.token))
+  console.log(
+    "STOREFRONT_SALES_CHANNELS=" +
+      salesChannels.map((x: any) => x.id).join(",")
+  )
 }
