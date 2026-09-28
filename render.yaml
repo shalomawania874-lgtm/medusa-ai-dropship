@@ -6,57 +6,6 @@ services:
     region: oregon
     branch: main
     repo: https://github.com/shalomawania874-lgtm/medusa-ai-dropship
-    buildCommand: rm -rf apps/backend/.medusa apps/backend/node_modules/.medusa && cd apps/backend && npm install --legacy-peer-deps --no-audit --no-fund && npm run build && cd .medusa/server && npm install --legacy-peer-deps --omit=dev --no-audit --no-fund && cd ../.. && npx medusa db:migrate
-    startCommand: cd apps/backend/.medusa/server && npm start
+    buildCommand: cd apps/backend && npm install --legacy-peer-deps --no-audit --no-fund && npm run build && cd .medusa/server && npm install --legacy-peer-deps --omit=dev --no-audit --no-fund && cd ../.. && npx medusa db:migrate --skip-links --skip-search
+    startCommand: node apps/backend/.medusa/server/index.js
     healthCheckPath: /health
-    envVars:
-      - key: NODE_ENV
-        value: production
-      - key: MEDUSA_WORKER_MODE
-        value: server
-      - key: DISABLE_MEDUSA_ADMIN
-        value: "false"
-      - key: DATABASE_URL
-        sync: false
-      - key: REDIS_URL
-        sync: false
-      - key: JWT_SECRET
-        generateValue: true
-      - key: COOKIE_SECRET
-        generateValue: true
-      - key: STORE_CORS
-        sync: false
-      - key: ADMIN_CORS
-        sync: false
-      - key: AUTH_CORS
-        sync: false
-      - key: OPENAI_API_KEY
-        sync: false
-      - key: OPENAI_MODEL
-        value: gpt-5.6-luna
-      - key: CJ_ACCESS_TOKEN
-        sync: false
-      - key: CJ_BASE_URL
-        value: https://developers.cjdropshipping.com/api2.0/v1
-      - key: CJ_LOGISTIC_NAME
-        sync: false
-      - key: CJ_FROM_COUNTRY
-        value: CN
-      - key: PESAPAL_CONSUMER_KEY
-        sync: false
-      - key: PESAPAL_CONSUMER_SECRET
-        sync: false
-      - key: PESAPAL_ENVIRONMENT
-        value: live
-      - key: PESAPAL_CURRENCY
-        value: UGX
-      - key: PESAPAL_MERCHANT_NAME
-        sync: false
-      - key: PESAPAL_IPN_URL
-        sync: false
-      - key: RESEND_API_KEY
-        sync: false
-      - key: FROM_EMAIL
-        sync: false
-      - key: STORE_PUBLIC_URL
-        sync: false
