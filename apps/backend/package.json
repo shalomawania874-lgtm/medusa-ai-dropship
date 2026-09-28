@@ -5,8 +5,8 @@
   "author": "Medusa (https://medusajs.com)",
   "license": "MIT",
   "scripts": {
-    "build": "medusa build && cp medusa-config.js .medusa/server/medusa-config.js",
-    "start": "node .medusa/server/index.js",
+    "build": "medusa build && cp -f medusa-config.js .medusa/server/medusa-config.js",
+    "start": "cd medusa-server && npm start",
     "dev": "medusa develop",
     "lint": "medusa lint"
   },
