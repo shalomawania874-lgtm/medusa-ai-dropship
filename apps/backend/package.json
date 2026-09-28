@@ -5,7 +5,8 @@
   "author": "Medusa (https://medusajs.com)",
   "license": "MIT",
   "scripts": {
-    "build": "medusa build && cp -f medusa-config.js .medusa/server/medusa-config.js",
+    "postbuild": "mkdir -p .medusa/server/src/jobs .medusa/server/src/subscribers .medusa/server/src/workflows .medusa/server/src/modules && cp -R src/jobs/. .medusa/server/src/jobs/ && cp -R src/subscribers/. .medusa/server/src/subscribers/ && cp -R src/workflows/. .medusa/server/src/workflows/ && cp -R src/modules/. .medusa/server/src/modules/",
+    "build": "medusa build && npm run postbuild && cp -f medusa-config.js .medusa/server/medusa-config.js",
     "start": "medusa start",
     "dev": "medusa develop",
     "lint": "medusa lint"
