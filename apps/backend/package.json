@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "medusa build && cp medusa-config.js .medusa/server/medusa-config.js",
-    "start": "medusa start",
+    "start": "node .medusa/server/index.js",
     "dev": "medusa develop",
     "lint": "medusa lint"
   },
