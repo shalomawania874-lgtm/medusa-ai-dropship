@@ -18,19 +18,13 @@ async function handler({ event, container }) {
 
   const order = orders?.[0]
   if (!order) {
-    throw new Error(
-      "Order not found for payment capture: " + String(event.data.id)
-    )
+    throw new Error("Order not found for payment capture: " + event.data.id)
   }
 
-  await sendOrderToCJWorkflow(container).run({
-    input: { order },
-  })
+  await sendOrderToCJWorkflow(container).run({ input: { order } })
 }
 
 module.exports = {
   default: handler,
-  config: {
-    event: "payment.captured",
-  },
+  config: { event: "payment.captured" },
 }
