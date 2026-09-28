@@ -1,9 +1,6 @@
 const { loadEnv, defineConfig } = require("@medusajs/framework/utils")
-
 loadEnv(process.env.NODE_ENV || "development", process.cwd())
-
 const redisUrl = process.env.REDIS_URL
-
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
@@ -17,21 +14,13 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET,
     },
   },
-  admin: {
-    disable: process.env.DISABLE_MEDUSA_ADMIN === "true",
-  },
+  admin: { disable: process.env.DISABLE_MEDUSA_ADMIN === "true" },
   modules: [
     ...(redisUrl ? [
-      {
-        resolve: "@medusajs/medusa/caching",
-        options: { providers: [{ resolve: "@medusajs/caching-redis", id: "caching-redis", is_default: true, options: { redisUrl } }] },
-      },
+      { resolve: "@medusajs/medusa/caching", options: { providers: [{ resolve: "@medusajs/caching-redis", id: "caching-redis", is_default: true, options: { redisUrl } }] } },
       { resolve: "@medusajs/medusa/event-bus-redis", options: { redisUrl } },
       { resolve: "@medusajs/medusa/workflow-engine-redis", options: { redis: { redisUrl } } },
-      {
-        resolve: "@medusajs/medusa/locking",
-        options: { providers: [{ resolve: "@medusajs/medusa/locking-redis", id: "locking-redis", is_default: true, options: { redisUrl } }] },
-      },
+      { resolve: "@medusajs/medusa/locking", options: { providers: [{ resolve: "@medusajs/locking-redis", id: "locking-redis", is_default: true, options: { redisUrl } }] } },
     ] : []),
     {
       resolve: "@medusajs/medusa/payment",
@@ -50,6 +39,6 @@ module.exports = defineConfig({
         }],
       },
     },
-    { resolve: "./src/modules/cj/index.js" },
+    { resolve: "./src/modules/cj" },
   ],
 })
