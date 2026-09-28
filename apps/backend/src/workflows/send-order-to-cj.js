@@ -1,15 +1,9 @@
 const { createStep, StepResponse, createWorkflow, WorkflowResponse } = require("@medusajs/framework/workflows-sdk")
-const { useRemoteQueryStep } = require("@medusajs/medusa/core-flows")
 const CJModuleService = require("../modules/cj/service.js")
 
 const sendStep = createStep("send-order-to-cj", async ({ order }) => {
-  const existing = order.metadata?.cj_fulfillment
-  if (existing?.externalId) return new StepResponse(existing)
-
   const cj = new CJModuleService()
-  if (!cj.configured()) {
-    throw new Error("CJ_ACCESS_TOKEN is not configured; order was not sent to supplier")
-  }
+  if (!cj.configured()) throw new Error("CJ_ACCESS_TOKEN is not configured; order was not sent to supplier")
 
   const items = (order.items || []).map((item) => ({
     cjVariantId: item.variant?.metadata?.cj_variant_id,
@@ -18,14 +12,11 @@ const sendStep = createStep("send-order-to-cj", async ({ order }) => {
     lineItemId: item.id,
   }))
 
-  if (!items.length) throw new Error("Order has no fulfillable items")
+  if (!items.length) throw new Error("Order has no fulfillment items")
 
   const result = await cj.createOrder({
     orderNumber: order.display_id ? String(order.display_id) : order.id,
-    shipping: {
-      ...(order.shipping_address || {}),
-      email: order.email,
-    },
+    shipping: { ...(order.shipping_address || {}), email: order.email },
     items,
   })
 
@@ -38,29 +29,12 @@ const sendStep = createStep("send-order-to-cj", async ({ order }) => {
 
   if (!externalId) throw new Error("CJ returned no supplier order identifier")
 
-  return new StepResponse({ externalId, raw: result })
+  return new StepResponse({ externalId, raw: result }, externalId)
 })
 
-const sendOrderToCJWorkflow = createWorkflow(
-  "send-order-to-cj",
-  ({ orderId }) => {
-    const { data: orders } = useRemoteQueryStep({
-      entry_point: "order",
-      fields: [
-        "id",
-        "display_id",
-        "email",
-        "metadata",
-        "items.*",
-        "items.variant.*",
-        "shipping_address.*",
-      ],
-      variables: { filters: { id: orderId } },
-    })
-
-    const sent = sendStep({ order: orders[0] })
-    return new WorkflowResponse(sent)
-  }
-)
+const sendOrderToCJWorkflow = createWorkflow("send-order-to-cj", ({ order }) => {
+  const sent = sendStep({ order })
+  return new WorkflowResponse(sent)
+})
 
 module.exports = { sendOrderToCJWorkflow }

@@ -1,21 +1,26 @@
 const { sendOrderToCJWorkflow } = require("../workflows/send-order-to-cj.js")
 
 async function handler({ event, container }) {
-  try {
-    await sendOrderToCJWorkflow(container).run({
-      input: { orderId: event.data.id },
-    })
-  } catch (error) {
-    const logger = container.resolve("logger")
-    logger.error(
-      "CJ fulfillment failed for " + event.data.id + ": " +
-        (error instanceof Error ? error.message : String(error))
-    )
-    throw error
-  }
+  const query = container.resolve("query")
+  const { data: orders } = await query.graph({
+    entity: "order",
+    fields: [
+      "id",
+      "display_id",
+      "email",
+      "metadata",
+      "items.*",
+      "items.variant.*",
+      "shipping_address.*",
+    ],
+    filters: { id: event.data.id },
+  })
+
+  const order = orders?.[0]
+  if (!order) throw new Error("Order not found for payment capture: " + event.data.id)
+
+  await sendOrderToCJWorkflow(container).run({ input: { order } })
 }
 
 module.exports = handler
-module.exports.config = {
-  event: "payment.captured",
-}
+module.exports.config = { event: "payment.captured" }
