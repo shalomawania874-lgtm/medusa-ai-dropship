@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "medusa build",
-    "start": "medusa start",
+    "start": "cd .medusa/server && npm start",
     "dev": "medusa develop",
     "lint": "medusa lint"
   },
